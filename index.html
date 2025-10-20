@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="description" content="Trade Table Uppsala – lämna och hämta saker gratis på campus. Hållbarhet genom återbruk." />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href="https://tredtable.shop/" />
+    <link rel="icon" href="/favicon.ico" />
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="Trade Table" />
+    <meta property="og:title" content="Trade Table – återbruk på campus" />
+    <meta property="og:description" content="Lämna och hämta saker gratis på Uppsala universitet. Hållbarhet, gemenskap och cirkulär ekonomi." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tredtable.shop/" />
+    <meta property="og:image" content="https://tredtable.shop/og-image.png" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Trade Table – återbruk på campus" />
+    <meta name="twitter:description" content="Lämna och hämta saker gratis på Uppsala universitet. Hållbarhet, gemenskap och cirkulär ekonomi." />
+    <meta name="twitter:image" content="https://tredtable.shop/og-image.png" />
+    <noscript>Den här webbplatsen använder JavaScript för vissa funktioner. Aktivera JavaScript för bästa upplevelse.</noscript><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trade Table - Campus Item Sharing</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlRyYWRlIFRhYmxlIiwKICAic2hvcnRfbmFtZSI6ICJUcmFkZVRhYmxlIiwKICAiZGVzY3JpcHRpb24iOiAiQ2FtcHVzIGl0ZW0gc2hhcmluZyB3aXRoIGxvY2F0aW9uLWJhc2VkIHNvcnRpbmcgYW5kIHJldGFpbGVyIHNlY3Rpb24iLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgInRoZW1lX2NvbG9yIjogIiMxYTY4NWYiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmY2ZjZjkiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL3VzZXItZ2VuLW1lZGlhLWFzc2V0cy5zMy5hbWF6b25hd3MuY29tL3NlZWRyZWFtX2ltYWdlcy82MzhkZmU2ZC0xNjVkLTRmMWYtYjRlZi1kNmZiMWE4YjI5NzMucG5nIiwKICAgICAgInNpemVzIjogIjE5MngxOTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
+</head>
+<body>
+    <a class="skip-link" href="#main">Hoppa till innehåll</a>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header__content">
+                <h1 class="header__logo">
+                    <i class="fas fa-exchange-alt"></i>
+                    Trade Table
+                </h1>
+                
+                <!-- Location Controls -->
+                <div class="location-controls">
+                    <button id="location-btn" class="location-btn">
+                        <i class="fas fa-location-arrow"></i>
+                        <span>Enable Location</span>
+                    </button>
+                    <select id="radius-selector" class="form-control radius-selector">
+                        <option value="1000">Any distance</option>
+                        <option value="0.5">0.5 km</option>
+                        <option value="1">1 km</option>
+                        <option value="2" selected>2 km</option>
+                        <option value="5">5 km</option>
+                        <option value="10">10 km</option>
+                        <option value="25">25 km</option>
+                    </select>
+                </div>
+                
+                <nav class="header__nav">
+                    <button class="nav-btn active" data-view="feed">
+                        <i class="fas fa-home"></i>
+                        <span>Feed</span>
+                    </button>
+                    <button class="nav-btn" data-view="retailers">
+                        <i class="fas fa-store"></i>
+                        <span>Retailers</span>
+                    </button>
+                    <button class="nav-btn" data-view="add-item">
+                        <i class="fas fa-plus"></i>
+                        <span>Add Item</span>
+                    </button>
+                    <button class="nav-btn" data-view="messages">
+                        <i class="fas fa-comment"></i>
+                        <span>Messages</span>
+                    </button>
+                    <button class="nav-btn" data-view="saved">
+                        <i class="fas fa-heart"></i>
+                        <span>Saved</span>
+                    </button>
+                    <button class="nav-btn" data-view="profile">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main id="main" class="main">
+        <div class="container">
+            <!-- Community Feed View -->
+            <div id="feed-view" class="view active">
+                <div class="feed-header">
+                    <h2>Community Feed</h2>
+                    <p class="feed-subtitle">Free items shared by community members</p>
+                    <div class="feed-controls">
+                        <div class="search-container">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="search-input" placeholder="Search items..." class="search-input">
+                        </div>
+                        <div class="filter-controls">
+                            <select id="category-filter" class="form-control filter-select">
+                                <option value="">All Categories</option>
+                            </select>
+                            <select id="condition-filter" class="form-control filter-select">
+                                <option value="">All Conditions</option>
+                            </select>
+                            <select id="sort-filter" class="form-control filter-select">
+                                <option value="latest">Latest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="popular">Most Popular</option>
+                                <option value="nearest">Nearest to Me</option>
+                                <option value="condition_best">Best Condition</option>
+                                <option value="condition_worst">Worst Condition</option>
+                                <option value="most_saved">Most Saved</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="items-grid" class="items-grid">
+                    <!-- Community items will be populated by JavaScript -->
+                </div>
+                <div id="no-items" class="no-items hidden">
+                    <i class="fas fa-box-open"></i>
+                    <p>No community items found matching your criteria.</p>
+                </div>
+            </div>
+
+            <!-- Retailers View -->
+            <div id="retailers-view" class="view">
+                <div class="feed-header">
+                    <h2>Retailers</h2>
+                    <p class="feed-subtitle">Discounted items from local businesses</p>
+                    <div class="retailers-info">
+                        <div class="info-card">
+                            <i class="fas fa-info-circle"></i>
+                            <p>This section features clearance and discounted items from verified businesses. Help reduce waste while finding great deals!</p>
+                        </div>
+                        <button class="btn btn--outline" id="register-business-btn">
+                            <i class="fas fa-store"></i>
+                            Register Your Business
+                        </button>
+                    </div>
+                    <div class="feed-controls">
+                        <div class="search-container">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="retail-search-input" placeholder="Search retail items..." class="search-input">
+                        </div>
+                        <div class="filter-controls">
+                            <select id="retail-category-filter" class="form-control filter-select">
+                                <option value="">All Categories</option>
+                            </select>
+                            <select id="retail-condition-filter" class="form-control filter-select">
+                                <option value="">All Conditions</option>
+                            </select>
+                            <select id="retail-sort-filter" class="form-control filter-select">
+                                <option value="latest">Latest First</option>
+                                <option value="popular">Most Popular</option>
+                                <option value="nearest">Nearest to Me</option>
+                                <option value="biggest_discount">Biggest Discount</option>
+                                <option value="lowest_price">Lowest Price</option>
+                                <option value="condition_best">Best Condition</option>
+                                <option value="store_rating">Best Rated Stores</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="retail-items-grid" class="items-grid">
+                    <!-- Retail items will be populated by JavaScript -->
+                </div>
+                <div id="no-retail-items" class="no-items hidden">
+                    <i class="fas fa-store-slash"></i>
+                    <p>No retail items found matching your criteria.</p>
+                </div>
+            </div>
+
+            <!-- Add Item View -->
+            <div id="add-item-view" class="view">
+                <div class="add-item-header">
+                    <h2>Share an Item</h2>
+                    <p class="text-secondary">Post a free item for the community</p>
+                </div>
+                <form id="add-item-form" class="add-item-form">
+                    <div class="form-group">
+                        <label class="form-label" for="item-title">Item Title *</label>
+                        <input type="text" id="item-title" class="form-control" required maxlength="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="item-description">Description *</label>
+                        <textarea id="item-description" class="form-control" rows="4" required maxlength="500" placeholder="Describe the item's condition and any relevant details..."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="item-category">Category *</label>
+                            <select id="item-category" class="form-control" required>
+                                <option value="">Select category</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="item-condition">Condition *</label>
+                            <select id="item-condition" class="form-control" required>
+                                <option value="">Select condition</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="item-location">Pickup Location *</label>
+                        <input type="text" id="item-location" class="form-control" required placeholder="e.g., Student Center, Main Library">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="item-address">Specific Address</label>
+                        <input type="text" id="item-address" class="form-control" placeholder="Room number, floor, specific area">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn--outline" id="cancel-add">Cancel</button>
+                        <button type="submit" class="btn btn--primary">
+                            <i class="fas fa-plus"></i>
+                            Post Item
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Messages View -->
+            <div id="messages-view" class="view">
+                <div class="messages-header">
+                    <h2>Messages</h2>
+                    <p class="text-secondary">Connect with other community members</p>
+                </div>
+                <div class="messages-placeholder">
+                    <i class="fas fa-comments"></i>
+                    <p>Messages feature coming soon!</p>
+                    <p class="text-secondary">You'll be able to chat with item owners and interested parties.</p>
+                </div>
+            </div>
+
+            <!-- Saved View -->
+            <div id="saved-view" class="view">
+                <div class="saved-header">
+                    <h2>Saved Items</h2>
+                    <p class="text-secondary">Items you've bookmarked for later</p>
+                </div>
+                <div id="saved-items-grid" class="items-grid">
+                    <!-- Saved items will be populated by JavaScript -->
+                </div>
+                <div id="no-saved-items" class="no-items hidden">
+                    <i class="fas fa-heart-broken"></i>
+                    <p>You haven't saved any items yet.</p>
+                    <p class="text-secondary">Click the heart icon on items to save them here.</p>
+                </div>
+            </div>
+
+            <!-- Profile View -->
+            <div id="profile-view" class="view">
+                <div class="profile-header">
+                    <h2>My Profile</h2>
+                    <p class="text-secondary">Manage your posted items and account</p>
+                </div>
+                <div id="my-items-list" class="my-items-list">
+                    <!-- User's items will be populated by JavaScript -->
+                </div>
+                <div id="no-my-items" class="no-items hidden">
+                    <i class="fas fa-plus-circle"></i>
+                    <p>You haven't posted any items yet.</p>
+                    <button class="btn btn--primary" data-view="add-item">Add Your First Item</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Business Registration Modal -->
+    <div id="business-registration-modal" class="modal hidden">
+        <div class="modal__backdrop"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>Register Your Business</h3>
+                <button class="modal__close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal__body">
+                <form id="business-registration-form">
+                    <div class="form-group">
+                        <label class="form-label">Business Name *</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Business Description *</label>
+                        <textarea class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Business Address *</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Phone *</label>
+                        <input type="tel" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Business Hours *</label>
+                        <input type="text" class="form-control" placeholder="e.g., Mon-Fri 9AM-6PM" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn--outline modal-close">Cancel</button>
+                        <button type="submit" class="btn btn--primary">Register Business</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Item Detail Modal -->
+    <div id="item-detail-modal" class="modal hidden">
+        <div class="modal__backdrop"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 id="modal-title">Item Details</h3>
+                <button class="modal__close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal__body">
+                <div class="item-detail">
+                    <div class="item-detail__images">
+                        <div id="modal-image-container" class="item-image-container">
+                            <!-- Images will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="item-detail__info">
+                        <div class="item-meta">
+                            <span id="modal-category" class="status status--info"></span>
+                            <span id="modal-condition" class="status"></span>
+                            <span id="modal-distance" class="distance-badge"></span>
+                        </div>
+                        <div class="item-pricing" id="modal-pricing" style="display: none;">
+                            <div class="price-comparison">
+                                <span class="original-price" id="modal-original-price"></span>
+                                <span class="discounted-price" id="modal-discounted-price"></span>
+                                <span class="discount-badge" id="modal-discount-badge"></span>
+                            </div>
+                        </div>
+                        <p id="modal-description" class="item-description"></p>
+                        
+                        <div class="item-location">
+                            <h4><i class="fas fa-map-marker-alt"></i> Location</h4>
+                            <p id="modal-location"></p>
+                            <p id="modal-address" class="text-secondary"></p>
+                        </div>
+
+                        <div class="item-contact">
+                            <h4><i class="fas fa-user"></i> Contact</h4>
+                            <div id="modal-user-info">
+                                <p id="modal-user-name"></p>
+                                <p id="modal-user-rating" class="text-secondary"></p>
+                            </div>
+                            <div id="modal-business-info" style="display: none;">
+                                <p id="modal-business-name"></p>
+                                <p id="modal-business-rating" class="text-secondary"></p>
+                                <p id="modal-business-hours" class="text-secondary"></p>
+                                <p id="modal-business-phone" class="text-secondary"></p>
+                            </div>
+                        </div>
+
+                        <div class="item-actions">
+                            <button id="save-item-btn" class="btn btn--outline">
+                                <i class="fas fa-heart"></i>
+                                <span>Save</span>
+                            </button>
+                            <button id="contact-btn" class="btn btn--primary">
+                                <i class="fas fa-comment"></i>
+                                Contact
+                            </button>
+                            <button id="mark-taken-btn" class="btn btn--primary" style="display: none;">
+                                <i class="fas fa-check"></i>
+                                Mark as Taken
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Location Permission Modal -->
+    <div id="location-permission-modal" class="modal hidden">
+        <div class="modal__backdrop"></div>
+        <div class="modal__content location-modal">
+            <div class="modal__header">
+                <h3>Enable Location Services</h3>
+                <button class="modal__close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal__body">
+                <div class="location-permission-content">
+                    <i class="fas fa-map-marker-alt location-icon"></i>
+                    <h4>Better Experience with Location</h4>
+                    <p>Allow Trade Table to access your location to:</p>
+                    <ul>
+                        <li>Find items near you</li>
+                        <li>Show distances to pickup locations</li>
+                        <li>Sort items by proximity</li>
+                        <li>Get better recommendations</li>
+                    </ul>
+                    <div class="form-actions">
+                        <button class="btn btn--outline modal-close">Not Now</button>
+                        <button id="enable-location-btn" class="btn btn--primary">
+                            <i class="fas fa-location-arrow"></i>
+                            Enable Location
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div id="message-container" class="message-container"></div>
+
+    <script src="app.js" defer></script>
+</body>
+</html>
