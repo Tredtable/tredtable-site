@@ -54,25 +54,25 @@
 :root {
   /* Primitive Color Tokens */
   --color-white: rgba(255, 255, 255, 1);
-  --color-black: rgba(0, 0, 0, 1);
-  --color-cream-50: rgba(252, 252, 249, 1);
-  --color-cream-100: rgba(255, 255, 253, 1);
-  --color-gray-200: rgba(245, 245, 245, 1);
-  --color-gray-300: rgba(167, 169, 169, 1);
-  --color-gray-400: rgba(119, 124, 124, 1);
-  --color-slate-500: rgba(98, 108, 113, 1);
+  --color-black: #000000;
+  --color-cream-50: #ffffff;
+  --color-cream-100: #2C3E50;
+  --color-gray-200: #2C3E50;
+  --color-gray-300: rgb(77, 42, 42);
+  --color-gray-400: #000000;
+  --color-slate-500: #0ba53e;
   --color-brown-600: rgba(94, 82, 64, 1);
-  --color-charcoal-700: rgba(31, 33, 33, 1);
-  --color-charcoal-800: rgba(38, 40, 40, 1);
-  --color-slate-900: rgba(19, 52, 59, 1);
-  --color-teal-300: rgba(50, 184, 198, 1);
+  --color-charcoal-700: #F4F6F6;
+  --color-charcoal-800: #ffffff;
+  --color-slate-900: rgb(5, 5, 5);
+  --color-teal-300: #EDA6A7;
   --color-teal-400: rgba(45, 166, 178, 1);
   --color-teal-500: rgba(33, 128, 141, 1);
   --color-teal-600: rgba(29, 116, 128, 1);
   --color-teal-700: rgba(26, 104, 115, 1);
   --color-teal-800: rgba(41, 150, 161, 1);
   --color-red-400: rgba(255, 84, 89, 1);
-  --color-red-500: rgba(192, 21, 47, 1);
+  --color-red-500: #C0392B;
   --color-orange-400: rgba(230, 129, 97, 1);
   --color-orange-500: rgba(168, 75, 47, 1);
 
@@ -101,9 +101,10 @@
   --color-surface: var(--color-cream-100);
   --color-text: var(--color-slate-900);
   --color-text-secondary: var(--color-slate-500);
-  --color-primary: var(--color-teal-500);
-  --color-primary-hover: var(--color-teal-600);
-  --color-primary-active: var(--color-teal-700);
+  /* Primary color (updated to violet palette) */
+  --color-primary: #AF0000; /* violet-600 */
+  --color-primary-hover: #990000; /* slightly lighter/darker for hover */
+  --color-primary-active: #7F0000; /* active/darker */
   --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
   --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
   --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
@@ -115,7 +116,8 @@
   --color-success: var(--color-teal-500);
   --color-warning: var(--color-orange-500);
   --color-info: var(--color-slate-500);
-  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+  /* Use primary rgb for the focus ring to match the new primary color */
+  --color-focus-ring: rgba(var(--color-primary-rgb), 0.28);
   --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
 
   /* Common style patterns */
@@ -221,9 +223,10 @@
     --color-surface: var(--color-charcoal-800);
     --color-text: var(--color-gray-200);
     --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
-    --color-primary: var(--color-teal-300);
-    --color-primary-hover: var(--color-teal-400);
-    --color-primary-active: var(--color-teal-800);
+    --color-primary: #AF0000;
+    --color-primary-hover: #CC0000;
+    --color-primary-active: #990000;
+    --color-primary-rgb: 175, 0, 0;
     --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
     --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
     --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
@@ -232,8 +235,8 @@
     --color-success: var(--color-teal-300);
     --color-warning: var(--color-orange-400);
     --color-info: var(--color-gray-300);
-    --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
-    --color-btn-primary-text: var(--color-slate-900);
+    --color-focus-ring: rgba(var(--color-primary-rgb), 0.4);
+    --color-btn-primary-text: var(--color-cream-50);
     --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
     --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
     --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
@@ -281,9 +284,10 @@
   --color-surface: var(--color-charcoal-800);
   --color-text: var(--color-gray-200);
   --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
-  --color-primary: var(--color-teal-300);
-  --color-primary-hover: var(--color-teal-400);
-  --color-primary-active: var(--color-teal-800);
+  /* Dark-mode primary (so accents are visible on dark surfaces) */
+  --color-primary: #AF0000; /* violet-300 */
+  --color-primary-hover: #CC0000;
+  --color-primary-active: #990000;
   --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
   --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
   --color-secondary-active: rgba(var(--color-gray-400-rgb), 0.3);
@@ -292,12 +296,14 @@
   --color-success: var(--color-teal-300);
   --color-warning: var(--color-orange-400);
   --color-info: var(--color-gray-300);
-  --color-focus-ring: rgba(var(--color-teal-300-rgb), 0.4);
-  --color-btn-primary-text: var(--color-slate-900);
+  /* Focus ring tuned to primary */
+  --color-focus-ring: rgba(var(--color-primary-rgb), 0.4);
+  --color-btn-primary-text: var(--color-cream-50);
   --color-card-border: rgba(var(--color-gray-400-rgb), 0.15);
   --color-card-border-inner: rgba(var(--color-gray-400-rgb), 0.15);
   --shadow-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  
   --color-border-secondary: rgba(var(--color-gray-400-rgb), 0.2);
   --color-select-caret: rgba(var(--color-gray-200-rgb), 0.8);
 
@@ -327,9 +333,10 @@
   --color-surface: var(--color-cream-100);
   --color-text: var(--color-slate-900);
   --color-text-secondary: var(--color-slate-500);
-  --color-primary: var(--color-teal-500);
-  --color-primary-hover: var(--color-teal-600);
-  --color-primary-active: var(--color-teal-700);
+  /* Primary color (light theme) - match global primary */
+  --color-primary: #AF0000; /* violet-600 */
+  --color-primary-hover: #990000;
+  --color-primary-active: #7F0000;
   --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
   --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
   --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
@@ -341,7 +348,7 @@
   --color-success: var(--color-teal-500);
   --color-warning: var(--color-orange-500);
   --color-info: var(--color-slate-500);
-  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+  --color-focus-ring: rgba(var(--color-primary-rgb), 0.28);
 
   /* RGB versions for light mode */
   --color-success-rgb: var(--color-teal-500-rgb);
@@ -811,7 +818,7 @@ select.form-control {
 }
 
 .header__logo {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-primary);
   display: flex;
@@ -867,7 +874,7 @@ select.form-control {
   border: none;
   padding: var(--space-6) var(--space-12);
   border-radius: var(--radius-base);
-  color: var(--color-text-secondary);
+  #color: var(--color-text-secondary);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-standard);
@@ -912,7 +919,7 @@ select.form-control {
 }
 
 .feed-subtitle {
-  color: var(--color-text-secondary);
+  #color: var(--color-text-secondary);
   margin-bottom: var(--space-16);
 }
 
@@ -1076,7 +1083,7 @@ select.form-control {
 }
 
 .item-card__description {
-  color: var(--color-text-secondary);
+  #color: var(--color-text-secondary);
   margin-bottom: var(--space-12);
   line-height: 1.4;
   display: -webkit-box;
@@ -1137,7 +1144,7 @@ select.form-control {
   display: flex;
   align-items: center;
   gap: var(--space-6);
-  color: var(--color-text-secondary);
+  #color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   margin-bottom: var(--space-8);
 }
@@ -1213,7 +1220,7 @@ select.form-control {
   align-items: center;
   gap: var(--space-8);
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  #color: var(--color-text-secondary);
 }
 
 .user-avatar {
@@ -1239,7 +1246,7 @@ select.form-control {
 }
 
 .text-secondary {
-  color: var(--color-text-secondary);
+  #color: var(--color-text-secondary);
 }
 
 .add-item-form {
@@ -1580,7 +1587,7 @@ select.form-control {
   }
 
   .header__logo {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-2xl);
   }
 
   .location-controls {
@@ -1706,4 +1713,75 @@ select.form-control {
   .modal__content {
     margin: var(--space-8);
   }
+}
+
+/* Admin table styles */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+.admin-table th, .admin-table td {
+  border-bottom: 1px solid var(--color-card-border);
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+.admin-table th {
+  background: var(--color-surface);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.admin-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  font-size: 12px;
+}
+.admin-chip--active { background: rgba(16,185,129,.15); color:#10b981; }
+.admin-chip--taken  { background: rgba(239,68,68,.15); color:#ef4444; }
+
+/* Image preview thumbnails */
+.image-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: var(--space-8);
+  margin-bottom: var(--space-16);
+}
+.image-preview-grid .thumb {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-base);
+  overflow: hidden;
+  background: var(--color-bg-3);
+}
+.image-preview-grid .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Modal image carousel */
+.carousel-nav {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.carousel-btn {
+  pointer-events: all;
+  background: rgba(0,0,0,.55);
+  color: #fff;
+  border: 0;
+  border-radius: var(--radius-full);
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  margin: var(--space-8);
 }
