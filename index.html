@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
 
-    <meta name="description" content="Trade Table Uppsala – lämna och hämta saker gratis på campus. Hållbarhet genom återbruk." />
+    <meta name="description" content="Tred Table Uppsala – lämna och hämta saker gratis på campus. Hållbarhet genom återbruk." />
     <meta name="robots" content="index,follow" />
     <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href="https://tredtable.shop/" />
     <link rel="icon" href="/favicon.ico" />
     <!-- Open Graph -->
-    <meta property="og:site_name" content="Trade Table" />
-    <meta property="og:title" content="Trade Table – återbruk på campus" />
+    <meta property="og:site_name" content="Tred Table" />
+    <meta property="og:title" content="Tred Table – återbruk på campus" />
     <meta property="og:description" content="Lämna och hämta saker gratis på Uppsala universitet. Hållbarhet, gemenskap och cirkulär ekonomi." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://tredtable.shop/" />
     <meta property="og:image" content="https://tredtable.shop/og-image.png" />
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Trade Table – återbruk på campus" />
+    <meta name="twitter:title" content="Tred Table – återbruk på campus" />
     <meta name="twitter:description" content="Lämna och hämta saker gratis på Uppsala universitet. Hållbarhet, gemenskap och cirkulär ekonomi." />
     <meta name="twitter:image" content="https://tredtable.shop/og-image.png" />
     <noscript>Den här webbplatsen använder JavaScript för vissa funktioner. Aktivera JavaScript för bästa upplevelse.</noscript><meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Trade Table - Campus Item Sharing</title>
+    <title>Tred Table - Campus Item Sharing</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlRyYWRlIFRhYmxlIiwKICAic2hvcnRfbmFtZSI6ICJUcmFkZVRhYmxlIiwKICAiZGVzY3JpcHRpb24iOiAiQ2FtcHVzIGl0ZW0gc2hhcmluZyB3aXRoIGxvY2F0aW9uLWJhc2VkIHNvcnRpbmcgYW5kIHJldGFpbGVyIHNlY3Rpb24iLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgInRoZW1lX2NvbG9yIjogIiMxYTY4NWYiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmY2ZjZjkiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJodHRwczovL3VzZXItZ2VuLW1lZGlhLWFzc2V0cy5zMy5hbWF6b25hd3MuY29tL3NlZWRyZWFtX2ltYWdlcy82MzhkZmU2ZC0xNjVkLTRmMWYtYjRlZi1kNmZiMWE4YjI5NzMucG5nIiwKICAgICAgInNpemVzIjogIjE5MngxOTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmciCiAgICB9CiAgXQp9">
@@ -34,7 +34,7 @@
             <div class="header__content">
                 <h1 class="header__logo">
                     <i class="fas fa-exchange-alt"></i>
-                    Trade Table
+                    Tred Table
                 </h1>
                 
                 <!-- Location Controls -->
@@ -79,7 +79,11 @@
                         <i class="fas fa-user"></i>
                         <span>Profile</span>
                     </button>
-                </nav>
+                <button class="nav-btn" data-view="admin">
+    <i class="fas fa-shield-alt"></i>
+    <span>Admin</span>
+</button>
+</nav>
             </div>
         </div>
     </header>
@@ -214,6 +218,16 @@
                         <label class="form-label" for="item-address">Specific Address</label>
                         <input type="text" id="item-address" class="form-control" placeholder="Room number, floor, specific area">
                     </div>
+<div class="form-group">
+  <label class="form-label" for="item-images">Images (max 5)</label>
+  <input id="item-images" type="file" class="form-control" accept="image/*" multiple>
+  <small class="text-secondary">Tips: första bilden blir omslagsbilden på kortet.</small>
+</div>
+
+<div id="image-preview" class="image-preview-grid">
+  <!-- Thumbnails renderas här i realtid -->
+</div>
+
 
                     <div class="form-actions">
                         <button type="button" class="btn btn--outline" id="cancel-add">Cancel</button>
@@ -313,7 +327,44 @@
         </div>
     </div>
 
-    <!-- Item Detail Modal -->
+    <!-- Admin View -->
+<div id="admin-view" class="view">
+  <div class="profile-header">
+    <h2>Admin</h2>
+    <p class="text-secondary">Hantera community items</p>
+  </div>
+
+  <div class="card" style="padding:16px; margin-bottom:16px;">
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <input id="admin-title" class="form-control" placeholder="Titel">
+      <input id="admin-desc" class="form-control" placeholder="Beskrivning">
+      <select id="admin-category" class="form-control"></select>
+      <select id="admin-condition" class="form-control"></select>
+      <input id="admin-location" class="form-control" placeholder="Plats, t.ex. Student Center">
+      <input id="admin-address" class="form-control" placeholder="Adress, t.ex. rum eller våning">
+      <button id="admin-add-btn" class="btn btn--primary"><i class="fas fa-plus"></i> Lägg till</button>
+    </div>
+  </div>
+
+  <div class="card" style="padding:0;">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Titel</th>
+          <th>Kategori</th>
+          <th>Skick</th>
+          <th>Plats</th>
+          <th>Status</th>
+          <th>Åtgärder</th>
+        </tr>
+      </thead>
+      <tbody id="admin-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Item Detail Modal -->
     <div id="item-detail-modal" class="modal hidden">
         <div class="modal__backdrop"></div>
         <div class="modal__content">
