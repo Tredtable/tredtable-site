@@ -13,7 +13,10 @@ class TradeTableApp {
         this.selectedItem = null;
         this.savedItems = new Set();
         
-        // Data from application_data_json
+        
+        this.addItemImages = [];
+        this.isAdmin = false;
+// Data from application_data_json
         this.communityItems = [];
         this.retailItems = [];
         this.businesses = [];
@@ -22,8 +25,15 @@ class TradeTableApp {
         this.sortOptions = [];
         this.retailSortOptions = [];
         
-        this.loadAppData();
+        
+        this._loadSavedItems && this._loadSavedItems();
+this.loadAppData();
         this.init();
+    
+        try {
+            const m = location.hash && location.hash.match(/^#item-(\d+)/);
+            if (m) this.showItemDetail(parseInt(m[1],10));
+        } catch(e) {}
     }
     
     loadAppData() {
@@ -307,7 +317,9 @@ class TradeTableApp {
     
     init() {
         this.setupEventListeners();
-        this.populateDropdowns();
+        
+        this._maybeRestoreAdmin && this._maybeRestoreAdmin();
+this.populateDropdowns();
         this.updateLocationDisplay();
         this.renderCurrentView();
     }
@@ -353,7 +365,32 @@ class TradeTableApp {
         document.getElementById('add-item-form').addEventListener('submit', (e) => this.handleAddItem(e));
         document.getElementById('cancel-add').addEventListener('click', () => this.showView('feed'));
         
-        // Modal controls
+        
+        // Image uploads (Add Item)
+        const imgInput = document.getElementById('item-images');
+        if (imgInput) {
+            imgInput.addEventListener('change', (e) => this.handleImageSelect(e));
+        }
+        
+        // Admin nav
+        const adminNav = document.querySelector('[data-view="admin"]');
+        if (adminNav) {
+            adminNav.addEventListener('click', () => {
+                if (!this.isAdmin) {
+                    const pass = prompt('Ange adminlösenord:');
+                    if (pass === 'tredtable-admin') {
+                        this.isAdmin = true;
+                        try { localStorage.setItem('tt_is_admin','1'); } catch(e){}
+                        this.showMessage('Inloggad som admin', 'success');
+                    } else {
+                        this.showMessage('Fel lösenord', 'error');
+                        return;
+                    }
+                }
+                this.showView('admin');
+            });
+        }
+// Modal controls
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if (e.target.classList.contains('modal__backdrop') || 
@@ -411,19 +448,23 @@ class TradeTableApp {
     }
     
     showView(viewName) {
-        // Update navigation
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        const navBtn = document.querySelector(`[data-view="${viewName}"]`);
+        if (navBtn) navBtn.classList.add('active');
         
-        // Update views
-        document.querySelectorAll('.view').forEach(view => {
-            view.classList.remove('active');
-        });
-        document.getElementById(`${viewName}-view`).classList.add('active');
+        document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+        const targetView = document.getElementById(`${viewName}-view`);
+        if (targetView) targetView.classList.add('active');
         
         this.currentView = viewName;
+        
+        if (viewName === 'admin') {
+            if (!this.isAdmin) return;
+            this.populateAdminDropdowns && this.populateAdminDropdowns();
+            this.renderAdmin && this.renderAdmin();
+            this.bindAdminControls && this.bindAdminControls();
+            return;
+        }
         this.renderCurrentView();
     }
     
@@ -749,10 +790,29 @@ class TradeTableApp {
         document.getElementById('modal-distance').textContent = 
             `${distance < 1 ? `${Math.round(distance * 1000)}m` : `${distance.toFixed(1)}km`} away`;
         
+        
         // Images
         const imageContainer = document.getElementById('modal-image-container');
         if (item.images && item.images.length > 0) {
-            imageContainer.innerHTML = `<img src="${item.images[0]}" alt="${item.title}">`;
+            imageContainer.innerHTML = `
+                <img id="modal-main-image" src="${item.images[0]}" alt="${this.escape(item.title)}">
+                ${item.images.length > 1 ? `
+                  <div class="carousel-nav">
+                    <button class="carousel-btn" id="img-prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+                    <button class="carousel-btn" id="img-next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+                  </div>` : ``}
+            `;
+            let idx = 0;
+            const update = () => {
+                const el = document.getElementById('modal-main-image');
+                if (el) el.src = item.images[idx];
+            };
+            const prev = document.getElementById('img-prev');
+            const next = document.getElementById('img-next');
+            if (prev && next) {
+                prev.onclick = (ev)=>{ ev.stopPropagation(); idx = (idx - 1 + item.images.length) % item.images.length; update(); };
+                next.onclick = (ev)=>{ ev.stopPropagation(); idx = (idx + 1) % item.images.length; update(); };
+            }
         } else {
             imageContainer.innerHTML = `
                 <div class="item-image-placeholder">
@@ -761,6 +821,9 @@ class TradeTableApp {
                 </div>`;
         }
         
+        // Deep link for sharing
+        try { history.replaceState(null, '', `#item-${item.id}`); } catch(e) {}
+
         // Type-specific content
         if (item.type === 'retail') {
             // Show pricing
@@ -818,6 +881,8 @@ class TradeTableApp {
             this.savedItems.add(id);
             this.showMessage('Item saved for later', 'success');
         }
+        
+        this._persistSavedItems && this._persistSavedItems();
         
         // Update UI
         this.renderCurrentView();
@@ -880,7 +945,7 @@ class TradeTableApp {
             saved: false,
             status: 'active',
             type: 'community',
-            images: []
+            images: this.addItemImages || []
         };
         
         this.communityItems.unshift(newItem);
@@ -891,7 +956,158 @@ class TradeTableApp {
     resetAddForm() {
         document.getElementById('add-item-form').reset();
     }
+// --- Admin helpers ---
+    _maybeRestoreAdmin(){
+        try { this.isAdmin = localStorage.getItem('tt_is_admin') === '1'; } catch(e){}
+    }
+    populateAdminDropdowns(){
+        const cat = document.getElementById('admin-category');
+        const cond = document.getElementById('admin-condition');
+        if (!cat || !cond) return;
+        if (!cat.options.length) {
+            this.categories.filter(c => c.name !== 'All Categories')
+                .forEach(c => {
+                    const o = document.createElement('option');
+                    o.value = c.name; o.textContent = c.name; cat.appendChild(o);
+                });
+        }
+        if (!cond.options.length) {
+            this.conditions.forEach(cn => {
+                const o = document.createElement('option');
+                o.value = cn.value; o.textContent = cn.value; cond.appendChild(o);
+            });
+        }
+    }
+    renderAdmin(){
+        const tbody = document.getElementById('admin-tbody');
+        if (!tbody) return;
+        tbody.innerHTML = this.communityItems.map(i => {
+            const chipClass = i.status === 'active' ? 'admin-chip admin-chip--active' : 'admin-chip admin-chip--taken';
+            const chipText = i.status === 'active' ? 'Aktiv' : 'Tagen';
+            return `
+              <tr data-id="${i.id}">
+                <td>${i.id}</td>
+                <td contenteditable="true" data-field="title">${this.escape(i.title)}</td>
+                <td>
+                  <select data-field="category" class="form-control" style="min-width:140px;">
+                    ${this.categories.filter(c=>c.name!=='All Categories').map(c => `<option ${c.name===i.category?'selected':''}>${c.name}</option>`).join('')}
+                  </select>
+                </td>
+                <td>
+                  <select data-field="condition" class="form-control" style="min-width:140px;">
+                    ${this.conditions.map(cn => `<option ${cn.value===i.condition?'selected':''}>${cn.value}</option>`).join('')}
+                  </select>
+                </td>
+                <td contenteditable="true" data-field="location">${this.escape(i.location)}</td>
+                <td><span class="${chipClass}">${chipText}</span></td>
+                <td>
+                  <button class="btn btn--sm btn--outline" data-action="toggle">${i.status==='active'?'Markera tagen':'Aktivera'}</button>
+                  <button class="btn btn--sm btn--primary" data-action="save">Spara</button>
+                  <button class="btn btn--sm btn--outline" data-action="delete">Ta bort</button>
+                </td>
+              </tr>`;
+        }).join('');
+    }
+    bindAdminControls(){
+        const addBtn = document.getElementById('admin-add-btn');
+        if (addBtn) {
+            addBtn.onclick = () => {
+                const title = document.getElementById('admin-title').value.trim();
+                const desc = document.getElementById('admin-desc').value.trim();
+                const cat = document.getElementById('admin-category').value;
+                const cond = document.getElementById('admin-condition').value;
+                const loc = document.getElementById('admin-location').value.trim();
+                const addr = document.getElementById('admin-address').value.trim();
+                if (!title || !desc || !cat || !cond || !loc) {
+                    this.showMessage('Fyll i alla obligatoriska fält', 'error'); return;
+                }
+                const newItem = {
+                    id: Date.now(),
+                    title, description: desc, category: cat, condition: cond,
+                    location: loc, address: addr,
+                    coordinates: this.userLocation || {lat: 40.7831, lng: -73.9648},
+                    distance: 0, postedDate: new Date().toISOString(),
+                    userId: this.currentUser, userName: 'Admin', userAvatar: 'AD',
+                    userRating: 5.0, views: 0, saved: false, status: 'active', type: 'community',
+                    images: []
+                };
+                this.communityItems.unshift(newItem);
+                this.showMessage('Item skapat', 'success');
+                this.renderAdmin();
+            };
+        }
+        const tbody = document.getElementById('admin-tbody');
+        if (!tbody) return;
+        tbody.onclick = (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            const tr = e.target.closest('tr');
+            const id = parseInt(tr.dataset.id,10);
+            const item = this.communityItems.find(x => x.id === id);
+            if (!item) return;
+            if (btn.dataset.action === 'toggle') {
+                item.status = item.status === 'active' ? 'taken' : 'active';
+                this.showMessage('Status uppdaterad', 'success');
+                this.renderAdmin();
+                this.renderCurrentView();
+            }
+            if (btn.dataset.action === 'delete') {
+                if (confirm('Ta bort detta item?')) {
+                    this.communityItems = this.communityItems.filter(x => x.id !== id);
+                    this.savedItems.delete(id);
+                    this.showMessage('Item borttaget', 'success');
+                    this.renderAdmin();
+                    this.renderCurrentView();
+                }
+            }
+            if (btn.dataset.action === 'save') {
+                const titleCell = tr.querySelector('[data-field="title"]');
+                const locCell = tr.querySelector('[data-field="location"]');
+                const catSel = tr.querySelector('[data-field="category"]');
+                const condSel = tr.querySelector('[data-field="condition"]');
+                item.title = titleCell.textContent.trim();
+                item.location = locCell.textContent.trim();
+                item.category = catSel.value;
+                item.condition = condSel.value;
+                this.showMessage('Sparat', 'success');
+                this.renderAdmin();
+                this.renderCurrentView();
+            }
+        };
+    }
+    escape(s){ return (s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[m])); }
     
+    // --- Image upload helpers ---
+    handleImageSelect(e){
+        const files = Array.from(e.target.files || []);
+        const max = 5;
+        if (!files.length) return;
+        const preview = document.getElementById('image-preview');
+        this.addItemImages = [];
+        const toBase64 = (file) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+        const take = files.slice(0, max);
+        Promise.all(take.map(f => toBase64(f))).then(imgs => {
+            this.addItemImages = imgs;
+            if (preview) {
+                preview.innerHTML = imgs.map(src => `<div class="thumb"><img src="${src}" alt="preview"></div>`).join('');
+            }
+        }).catch(()=> {
+            this.showMessage('Kunde inte läsa bildfil.', 'error');
+        });
+    }
+    resetAddForm(){
+        const form = document.getElementById('add-item-form');
+        if (form) form.reset();
+        this.addItemImages = [];
+        const preview = document.getElementById('image-preview');
+        if (preview) preview.innerHTML = '';
+    }
+
     // Location functions
     requestLocation() {
         this.showModal('location-permission-modal');
